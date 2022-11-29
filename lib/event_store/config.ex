@@ -3,7 +3,7 @@ defmodule EventStore.Config do
   Provides access to the EventStore configuration.
   """
 
-  @integer_url_query_params ["pool_size"]
+  @integer_url_query_params ["pool_size", "queue_target", "queue_interval"]
 
   @doc """
   Get the event store configuration for the environment.
@@ -164,7 +164,9 @@ defmodule EventStore.Config do
   def postgrex_opts(config) do
     [
       pool_size: 10,
-      pool_overflow: 0
+      pool_overflow: 0,
+      queue_target: 50,
+      queue_interval: 1_000
     ]
     |> Keyword.merge(config)
     |> Keyword.take(
@@ -172,7 +174,9 @@ defmodule EventStore.Config do
         [
           :pool,
           :pool_size,
-          :pool_overflow
+          :pool_overflow,
+          :queue_target,
+          :queue_interval
         ]
     )
     |> Keyword.put(:backoff_type, :exp)
